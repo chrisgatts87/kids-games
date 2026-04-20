@@ -7,18 +7,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #fff9f0;
+    --bg: #f5f0ff;
     --card: #ffffff;
-    --primary: #ff6b6b;
-    --secondary: #4ecdc4;
-    --accent: #ffe66d;
-    --purple: #a855f7;
+    --primary: #7c3aed;
+    --primary-light: #9d5eff;
+    --primary-dark: #5b21b6;
+    --secondary: #c084fc;
+    --accent: #e879f9;
+    --accent2: #f0abfc;
+    --pink: #ec4899;
     --green: #22c55e;
     --blue: #3b82f6;
     --orange: #f97316;
-    --text: #1a1a2e;
-    --muted: #6b7280;
-    --shadow: 0 8px 32px rgba(0,0,0,0.12);
+    --teal: #14b8a6;
+    --text: #1e1033;
+    --muted: #7c6f9a;
+    --shadow: 0 8px 32px rgba(124,58,237,0.15);
     --radius: 20px;
   }
 
@@ -29,30 +33,49 @@
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    background-image: 
-      radial-gradient(circle at 20% 20%, rgba(255,107,107,0.08) 0%, transparent 50%),
-      radial-gradient(circle at 80% 80%, rgba(78,205,196,0.08) 0%, transparent 50%),
-      radial-gradient(circle at 50% 50%, rgba(255,230,109,0.05) 0%, transparent 70%);
+    background-image:
+      radial-gradient(circle at 10% 10%, rgba(192,132,252,0.25) 0%, transparent 40%),
+      radial-gradient(circle at 90% 90%, rgba(124,58,237,0.15) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(232,121,249,0.08) 0%, transparent 60%);
   }
 
   header {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--accent) 100%);
+    padding: 36px 20px 28px;
     text-align: center;
-    padding: 40px 20px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+  }
+
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -50px; left: -30px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
   }
 
   header h1 {
     font-family: 'Fredoka One', cursive;
-    font-size: clamp(2rem, 8vw, 3.5rem);
-    background: linear-gradient(135deg, var(--primary), var(--purple), var(--secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-size: clamp(2rem, 8vw, 3.2rem);
+    color: white;
     line-height: 1.1;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.2);
   }
 
   header p {
-    color: var(--muted);
+    color: rgba(255,255,255,0.8);
     font-size: 1rem;
     font-weight: 600;
   }
@@ -60,107 +83,192 @@
   .container {
     max-width: 600px;
     margin: 0 auto;
-    padding: 0 16px 40px;
+    padding: 20px 16px 40px;
   }
+
+  /* PICK BUTTON — top of page */
+  .pick-btn {
+    width: 100%;
+    padding: 20px;
+    border-radius: var(--radius);
+    border: none;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.6rem;
+    cursor: pointer;
+    box-shadow: 0 6px 24px rgba(124,58,237,0.45);
+    transition: all 0.2s;
+    margin-bottom: 16px;
+    letter-spacing: 0.02em;
+  }
+
+  .pick-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(124,58,237,0.55); }
+  .pick-btn:active { transform: scale(0.98); }
+
+  /* SEARCH BAR */
+  .search-wrap {
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 14px 16px 14px 44px;
+    border-radius: var(--radius);
+    border: 2px solid rgba(124,58,237,0.2);
+    background: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    box-shadow: var(--shadow);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-input:focus { border-color: var(--primary); }
+  .search-input::placeholder { color: var(--muted); font-weight: 600; }
+
+  .search-clear {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--secondary);
+    border: none;
+    border-radius: 50%;
+    width: 24px; height: 24px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    color: white;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+  }
+
+  .search-clear.visible { display: flex; }
 
   /* FILTERS */
   .filters {
     background: var(--card);
     border-radius: var(--radius);
     padding: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     box-shadow: var(--shadow);
-    border: 2px solid rgba(0,0,0,0.04);
+    border: 2px solid rgba(124,58,237,0.08);
+  }
+
+  .filters-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    cursor: pointer;
+    user-select: none;
   }
 
   .filters h2 {
     font-family: 'Fredoka One', cursive;
     font-size: 1.1rem;
-    color: var(--text);
-    margin-bottom: 14px;
+    color: var(--primary);
     display: flex;
     align-items: center;
     gap: 8px;
   }
 
-  .filter-group {
-    margin-bottom: 14px;
+  .filters-toggle {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--muted);
+    background: rgba(124,58,237,0.08);
+    padding: 4px 10px;
+    border-radius: 100px;
   }
+
+  .filters-body { display: block; }
+  .filters-body.collapsed { display: none; }
+
+  .filter-group { margin-bottom: 14px; }
+  .filter-group:last-child { margin-bottom: 0; }
 
   .filter-group label {
     display: block;
-    font-size: 0.8rem;
-    font-weight: 700;
+    font-size: 0.75rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
     color: var(--muted);
     margin-bottom: 8px;
   }
 
-  .chip-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
 
   .chip {
     padding: 6px 14px;
     border-radius: 100px;
-    border: 2px solid rgba(0,0,0,0.1);
+    border: 2px solid rgba(124,58,237,0.15);
     background: white;
     font-family: 'Nunito', sans-serif;
     font-size: 0.85rem;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.18s;
     color: var(--text);
     user-select: none;
   }
 
   .chip:active { transform: scale(0.95); }
 
-  .chip.active-physical   { background: var(--primary);  border-color: var(--primary);  color: white; }
-  .chip.active-leisurely  { background: var(--blue);     border-color: var(--blue);     color: white; }
-  .chip.active-both       { background: var(--green);    border-color: var(--green);    color: white; }
-  .chip.active-video      { background: var(--purple);   border-color: var(--purple);   color: white; }
-  .chip.active-board      { background: var(--orange);   border-color: var(--orange);   color: white; }
-  .chip.active-card       { background: var(--secondary);border-color: var(--secondary);color: white; }
-  .chip.active-yes        { background: var(--green);    border-color: var(--green);    color: white; }
-  .chip.active-no         { background: var(--muted);    border-color: var(--muted);    color: white; }
-  .chip.active-indoors    { background: var(--blue);     border-color: var(--blue);     color: white; }
-  .chip.active-outdoors   { background: var(--green);    border-color: var(--green);    color: white; }
-  .chip.active-duration   { background: var(--accent);   border-color: #f0d000;         color: var(--text); }
+  /* All active chips use purple palette */
+  .chip.active-physical   { background: #7c3aed; border-color: #7c3aed; color: white; }
+  .chip.active-leisurely  { background: #9d5eff; border-color: #9d5eff; color: white; }
+  .chip.active-both       { background: #c084fc; border-color: #c084fc; color: white; }
+  .chip.active-videogame  { background: #5b21b6; border-color: #5b21b6; color: white; }
+  .chip.active-boardgame  { background: #e879f9; border-color: #e879f9; color: white; }
+  .chip.active-cardgame   { background: #a855f7; border-color: #a855f7; color: white; }
+  .chip.active-yes        { background: #7c3aed; border-color: #7c3aed; color: white; }
+  .chip.active-partly     { background: #9d5eff; border-color: #9d5eff; color: white; }
+  .chip.active-no         { background: #c084fc; border-color: #c084fc; color: white; }
+  .chip.active-indoors    { background: #7c3aed; border-color: #7c3aed; color: white; }
+  .chip.active-outdoors   { background: #5b21b6; border-color: #5b21b6; color: white; }
+  .chip.active-either     { background: #a855f7; border-color: #a855f7; color: white; }
+  .chip.active-10         { background: #e879f9; border-color: #e879f9; color: white; }
+  .chip.active-20         { background: #c084fc; border-color: #c084fc; color: white; }
+  .chip.active-30         { background: #9d5eff; border-color: #9d5eff; color: white; }
+  .chip.active-999        { background: #7c3aed; border-color: #7c3aed; color: white; }
 
-  /* PICK BUTTON */
-  .pick-btn {
-    width: 100%;
-    padding: 18px;
-    border-radius: var(--radius);
-    border: none;
-    background: linear-gradient(135deg, var(--primary), #ff8e53);
+  .count-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
     color: white;
-    font-family: 'Fredoka One', cursive;
-    font-size: 1.5rem;
-    cursor: pointer;
-    box-shadow: 0 6px 20px rgba(255,107,107,0.4);
-    transition: all 0.2s;
-    margin-bottom: 20px;
-    letter-spacing: 0.02em;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 2px 10px;
+    border-radius: 100px;
+    margin-left: 6px;
   }
-
-  .pick-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(255,107,107,0.45); }
-  .pick-btn:active { transform: scale(0.98); }
-  .pick-btn.loading { opacity: 0.7; cursor: wait; }
 
   /* RESULT CARD */
   .result-card {
     background: var(--card);
     border-radius: var(--radius);
     padding: 24px;
-    box-shadow: var(--shadow);
-    border: 2px solid rgba(0,0,0,0.04);
+    box-shadow: 0 8px 40px rgba(124,58,237,0.2);
+    border: 2px solid rgba(124,58,237,0.1);
     display: none;
     animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    margin-bottom: 16px;
   }
 
   .result-card.visible { display: block; }
@@ -181,21 +289,33 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-bottom: 12px;
+    background: rgba(124,58,237,0.1);
+    color: var(--primary);
   }
 
-  .badge-Physical   { background: rgba(255,107,107,0.15); color: var(--primary); }
-  .badge-Leisurely  { background: rgba(59,130,246,0.15);  color: var(--blue); }
-  .badge-Both       { background: rgba(34,197,94,0.15);   color: var(--green); }
-  .badge-Video\ Game{ background: rgba(168,85,247,0.15);  color: var(--purple); }
-  .badge-Board\ Game{ background: rgba(249,115,22,0.15);  color: var(--orange); }
-  .badge-Card\ Game { background: rgba(78,205,196,0.15);  color: var(--secondary); }
+  .edu-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(232,121,249,0.15);
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 100px;
+    margin-bottom: 12px;
+    margin-left: 6px;
+  }
 
   .result-name {
     font-family: 'Fredoka One', cursive;
     font-size: clamp(1.6rem, 6vw, 2.2rem);
     line-height: 1.1;
     margin-bottom: 10px;
-    color: var(--text);
+    background: linear-gradient(135deg, var(--primary-dark), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .result-desc {
@@ -210,13 +330,14 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    margin-bottom: 18px;
+    margin-bottom: 14px;
   }
 
   .meta-item {
-    background: var(--bg);
+    background: rgba(124,58,237,0.05);
     border-radius: 12px;
     padding: 10px 12px;
+    border: 1px solid rgba(124,58,237,0.08);
   }
 
   .meta-label {
@@ -224,7 +345,7 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--muted);
+    color: var(--secondary);
     margin-bottom: 2px;
   }
 
@@ -238,21 +359,21 @@
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    margin-bottom: 18px;
+    margin-bottom: 14px;
   }
 
   .tag {
     padding: 3px 10px;
     border-radius: 100px;
-    background: rgba(0,0,0,0.05);
+    background: rgba(124,58,237,0.08);
     font-size: 0.75rem;
     font-weight: 700;
-    color: var(--muted);
+    color: var(--primary);
   }
 
   .result-notes {
-    background: rgba(255,230,109,0.2);
-    border-left: 3px solid var(--accent);
+    background: rgba(192,132,252,0.12);
+    border-left: 3px solid var(--secondary);
     border-radius: 0 8px 8px 0;
     padding: 10px 14px;
     font-size: 0.875rem;
@@ -267,7 +388,7 @@
     gap: 6px;
     font-size: 0.8rem;
     font-weight: 700;
-    color: var(--blue);
+    color: var(--primary);
     text-decoration: none;
     margin-bottom: 18px;
   }
@@ -278,19 +399,31 @@
     width: 100%;
     padding: 14px;
     border-radius: var(--radius);
-    border: 2px solid var(--secondary);
+    border: 2px solid var(--primary);
     background: white;
-    color: var(--secondary);
+    color: var(--primary);
     font-family: 'Fredoka One', cursive;
     font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.2s;
   }
 
-  .again-btn:hover { background: var(--secondary); color: white; }
+  .again-btn:hover { background: var(--primary); color: white; }
   .again-btn:active { transform: scale(0.98); }
 
-  /* STATUS */
+  /* NO RESULTS / STATUS */
+  .no-results {
+    text-align: center;
+    padding: 30px 20px;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+
+  .no-results .emoji { font-size: 3rem; margin-bottom: 10px; }
+  .no-results p { color: var(--muted); font-weight: 700; }
+
   .status {
     text-align: center;
     padding: 20px;
@@ -299,107 +432,151 @@
     font-size: 0.9rem;
   }
 
-  .status.error { color: var(--primary); }
-
-  .count-badge {
-    display: inline-block;
-    background: var(--accent);
-    color: var(--text);
-    font-size: 0.75rem;
-    font-weight: 800;
-    padding: 2px 8px;
-    border-radius: 100px;
-    margin-left: 6px;
-  }
-
-  .no-results {
-    text-align: center;
-    padding: 30px 20px;
+  /* SEARCH RESULTS LIST */
+  .search-results {
+    display: none;
     background: var(--card);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
+    border: 2px solid rgba(124,58,237,0.1);
+    overflow: hidden;
+    margin-bottom: 16px;
   }
 
-  .no-results .emoji { font-size: 3rem; margin-bottom: 10px; }
-  .no-results p { color: var(--muted); font-weight: 700; }
+  .search-results.visible { display: block; }
 
-  /* Educational yes badge */
-  .edu-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    background: rgba(34,197,94,0.15);
-    color: var(--green);
-    font-size: 0.75rem;
+  .search-result-header {
+    padding: 12px 18px;
+    background: rgba(124,58,237,0.06);
+    font-size: 0.8rem;
     font-weight: 800;
-    padding: 3px 10px;
-    border-radius: 100px;
-    margin-bottom: 12px;
-    margin-left: 6px;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid rgba(124,58,237,0.08);
+  }
+
+  .search-result-item {
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(124,58,237,0.06);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .search-result-item:last-child { border-bottom: none; }
+  .search-result-item:hover { background: rgba(124,58,237,0.04); }
+
+  .sri-name {
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .sri-meta {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  mark {
+    background: rgba(232,121,249,0.25);
+    color: var(--primary-dark);
+    border-radius: 3px;
+    padding: 0 2px;
   }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>🎮 Game Picker!</h1>
+  <h1>🎮 Kids Game Picker</h1>
   <p>Find the perfect game for right now</p>
 </header>
 
 <div class="container">
 
-  <div class="filters">
-    <h2>🎯 Filters <span class="count-badge" id="matchCount">...</span></h2>
+  <!-- PICK BUTTON — top -->
+  <button class="pick-btn" id="pickBtn" onclick="pickGame()">🎲 Pick a Random Game!</button>
 
-    <div class="filter-group">
-      <label>Activity Type</label>
-      <div class="chip-row" id="typeFilters">
-        <div class="chip" data-filter="type" data-value="Physical">🏃 Physical</div>
-        <div class="chip" data-filter="type" data-value="Leisurely">🧩 Leisurely</div>
-        <div class="chip" data-filter="type" data-value="Both">⚡ Both</div>
-        <div class="chip" data-filter="type" data-value="Board Game">🎲 Board Game</div>
-        <div class="chip" data-filter="type" data-value="Card Game">🃏 Card Game</div>
-        <div class="chip" data-filter="type" data-value="Video Game">🕹️ Video Game</div>
-      </div>
-    </div>
-
-    <div class="filter-group">
-      <label>Location</label>
-      <div class="chip-row" id="locationFilters">
-        <div class="chip" data-filter="location" data-value="Indoors">🏠 Indoors</div>
-        <div class="chip" data-filter="location" data-value="Outdoors">🌳 Outdoors</div>
-        <div class="chip" data-filter="location" data-value="Both">🌤️ Either</div>
-      </div>
-    </div>
-
-    <div class="filter-group">
-      <label>Educational?</label>
-      <div class="chip-row" id="eduFilters">
-        <div class="chip" data-filter="educational" data-value="Yes">📚 Yes</div>
-        <div class="chip" data-filter="educational" data-value="Partly">🌱 Partly</div>
-        <div class="chip" data-filter="educational" data-value="No">🎉 Just fun!</div>
-      </div>
-    </div>
-
-    <div class="filter-group">
-      <label>Max Duration</label>
-      <div class="chip-row" id="durationFilters">
-        <div class="chip" data-filter="duration" data-value="10">⚡ 10 mins</div>
-        <div class="chip" data-filter="duration" data-value="20">🕐 20 mins</div>
-        <div class="chip" data-filter="duration" data-value="30">🕑 30 mins</div>
-        <div class="chip" data-filter="duration" data-value="999">⏳ Any</div>
-      </div>
-    </div>
-
+  <!-- SEARCH -->
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input
+      class="search-input"
+      id="searchInput"
+      type="text"
+      placeholder="Search games, tags, equipment..."
+      oninput="onSearch(this.value)"
+      autocomplete="off"
+    >
+    <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
   </div>
 
-  <button class="pick-btn" id="pickBtn" onclick="pickGame()">🎲 Pick a Game!</button>
+  <!-- SEARCH RESULTS -->
+  <div class="search-results" id="searchResults">
+    <div class="search-result-header" id="searchResultHeader"></div>
+    <div id="searchResultList"></div>
+  </div>
 
+  <!-- FILTERS -->
+  <div class="filters">
+    <div class="filters-header" onclick="toggleFilters()">
+      <h2>🎯 Filters <span class="count-badge" id="matchCount">...</span></h2>
+      <span class="filters-toggle" id="filtersToggle">Hide ▲</span>
+    </div>
+    <div class="filters-body" id="filtersBody">
+
+      <div class="filter-group">
+        <label>Activity Type</label>
+        <div class="chip-row">
+          <div class="chip" data-filter="type" data-value="Physical">🏃 Physical</div>
+          <div class="chip" data-filter="type" data-value="Leisurely">🧩 Leisurely</div>
+          <div class="chip" data-filter="type" data-value="Both">⚡ Both</div>
+          <div class="chip" data-filter="type" data-value="Board Game">🎲 Board Game</div>
+          <div class="chip" data-filter="type" data-value="Card Game">🃏 Card Game</div>
+          <div class="chip" data-filter="type" data-value="Video Game">🕹️ Video Game</div>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label>Location</label>
+        <div class="chip-row">
+          <div class="chip" data-filter="location" data-value="Indoors">🏠 Indoors</div>
+          <div class="chip" data-filter="location" data-value="Outdoors">🌳 Outdoors</div>
+          <div class="chip" data-filter="location" data-value="Both">🌤️ Either</div>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label>Educational?</label>
+        <div class="chip-row">
+          <div class="chip" data-filter="educational" data-value="Yes">📚 Yes</div>
+          <div class="chip" data-filter="educational" data-value="Partly">🌱 Partly</div>
+          <div class="chip" data-filter="educational" data-value="No">🎉 Just fun!</div>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label>Max Duration</label>
+        <div class="chip-row">
+          <div class="chip" data-filter="duration" data-value="10">⚡ 10 mins</div>
+          <div class="chip" data-filter="duration" data-value="20">🕐 20 mins</div>
+          <div class="chip" data-filter="duration" data-value="30">🕑 30 mins</div>
+          <div class="chip" data-filter="duration" data-value="999">⏳ Any</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- NO RESULTS -->
   <div class="no-results" id="noResults" style="display:none">
     <div class="emoji">🤔</div>
-    <p>No games match those filters.<br>Try removing a filter!</p>
+    <p>No games match those filters.<br>Try removing a filter or clearing the search!</p>
   </div>
 
+  <!-- RESULT CARD -->
   <div class="result-card" id="resultCard">
     <div id="resultContent"></div>
     <button class="again-btn" onclick="pickGame()">🔀 Pick Again!</button>
@@ -410,17 +587,16 @@
 </div>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────────────────────
 const SHEET_ID = '12D5fJgiggMLFqHqdtlKr-gtmSQDydrQBH3y5haWoIZs';
 const SHEET_NAME = 'Games';
 const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
 
-// ── STATE ────────────────────────────────────────────────────────────────
 let allGames = [];
 let filters = { type: null, location: null, educational: null, duration: null };
 let lastPicked = null;
+let filtersOpen = true;
 
-// ── FETCH DATA ───────────────────────────────────────────────────────────
+// ── FETCH ────────────────────────────────────────────────────────────────
 async function loadGames() {
   try {
     const res = await fetch(URL);
@@ -431,33 +607,21 @@ async function loadGames() {
       const c = row.c;
       const get = i => (c[i] && c[i].v != null) ? String(c[i].v).trim() : '';
       return {
-        name:        get(0),
-        description: get(1),
-        type:        get(2),
-        educational: get(3),
-        minPlayers:  get(4),
-        maxPlayers:  get(5),
-        minAge:      get(6),
-        maxAge:      get(7),
-        duration:    parseInt(get(8)) || 999,
-        location:    get(9),
-        equipment:   get(10),
-        tags:        get(11),
-        notes:       get(12),
-        imageUrl:    get(13),
-        sourceUrl:   get(14),
+        name: get(0), description: get(1), type: get(2), educational: get(3),
+        minPlayers: get(4), maxPlayers: get(5), minAge: get(6), maxAge: get(7),
+        duration: parseInt(get(8)) || 999, location: get(9),
+        equipment: get(10), tags: get(11), notes: get(12),
+        imageUrl: get(13), sourceUrl: get(14),
       };
     }).filter(g => g.name);
-
     document.getElementById('status').textContent = '';
     updateCount();
   } catch(e) {
     document.getElementById('status').textContent = '⚠️ Could not load games. Check your internet connection.';
-    document.getElementById('status').classList.add('error');
   }
 }
 
-// ── FILTERING ────────────────────────────────────────────────────────────
+// ── FILTERS ──────────────────────────────────────────────────────────────
 function getFiltered() {
   return allGames.filter(g => {
     if (filters.type && g.type !== filters.type) return false;
@@ -479,32 +643,83 @@ function updateCount() {
   document.getElementById('matchCount').textContent = n + ' game' + (n !== 1 ? 's' : '');
 }
 
-// ── CHIPS ────────────────────────────────────────────────────────────────
+function toggleFilters() {
+  filtersOpen = !filtersOpen;
+  document.getElementById('filtersBody').className = filtersOpen ? 'filters-body' : 'filters-body collapsed';
+  document.getElementById('filtersToggle').textContent = filtersOpen ? 'Hide ▲' : 'Show ▼';
+}
+
 document.querySelectorAll('.chip').forEach(chip => {
   chip.addEventListener('click', () => {
     const filterKey = chip.dataset.filter;
     const val = chip.dataset.value;
-
-    // Toggle off if already active
     if (filters[filterKey] === val) {
       filters[filterKey] = null;
       chip.className = 'chip';
     } else {
-      // Deactivate siblings
       document.querySelectorAll(`.chip[data-filter="${filterKey}"]`).forEach(c => c.className = 'chip');
       filters[filterKey] = val;
-      // Set active class based on value
-      const key = val.replace(' ', '').toLowerCase();
+      const key = val.replace(/\s/g, '').toLowerCase();
       chip.classList.add('active-' + key);
     }
     updateCount();
-    // Hide previous result when filters change
     document.getElementById('resultCard').classList.remove('visible');
     document.getElementById('noResults').style.display = 'none';
   });
 });
 
-// ── PICK GAME ────────────────────────────────────────────────────────────
+// ── SEARCH ───────────────────────────────────────────────────────────────
+function onSearch(query) {
+  const q = query.trim().toLowerCase();
+  const clearBtn = document.getElementById('searchClear');
+  const resultsBox = document.getElementById('searchResults');
+  const resultList = document.getElementById('searchResultList');
+  const header = document.getElementById('searchResultHeader');
+
+  clearBtn.className = q ? 'search-clear visible' : 'search-clear';
+
+  if (!q) {
+    resultsBox.className = 'search-results';
+    return;
+  }
+
+  const matches = allGames.filter(g => {
+    const haystack = [g.name, g.description, g.tags, g.equipment, g.type, g.notes].join(' ').toLowerCase();
+    return haystack.includes(q);
+  });
+
+  if (matches.length === 0) {
+    header.textContent = 'No results found';
+    resultList.innerHTML = '<div style="padding:16px 18px;color:#7c6f9a;font-weight:600;font-size:0.9rem;">Try a different keyword</div>';
+  } else {
+    header.textContent = matches.length + ' game' + (matches.length !== 1 ? 's' : '') + ' found';
+    resultList.innerHTML = matches.map(g => {
+      const hi = (str) => str.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'gi'), m => `<mark>${m}</mark>`);
+      return `<div class="search-result-item" onclick="showGame(allGames.find(x=>x.name===\`${g.name.replace(/`/g,"'")}\`))">
+        <div class="sri-name">${hi(g.name)}</div>
+        <div class="sri-meta">${g.type} · ${g.location} · ~${g.duration} mins · Ages ${g.minAge}–${g.maxAge}</div>
+      </div>`;
+    }).join('');
+  }
+
+  resultsBox.className = 'search-results visible';
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  onSearch('');
+}
+
+function showGame(game) {
+  if (!game) return;
+  // Clear search
+  clearSearch();
+  lastPicked = game;
+  renderGame(game);
+  document.getElementById('noResults').style.display = 'none';
+}
+
+// ── PICK ──────────────────────────────────────────────────────────────────
 function pickGame() {
   const pool = getFiltered();
   if (pool.length === 0) {
@@ -513,8 +728,7 @@ function pickGame() {
     return;
   }
   document.getElementById('noResults').style.display = 'none';
-
-  // Avoid picking the same game twice in a row if possible
+  clearSearch();
   let candidates = pool.length > 1 ? pool.filter(g => g !== lastPicked) : pool;
   const game = candidates[Math.floor(Math.random() * candidates.length)];
   lastPicked = game;
@@ -523,83 +737,45 @@ function pickGame() {
 
 // ── RENDER ────────────────────────────────────────────────────────────────
 function typeEmoji(type) {
-  const map = { 'Physical':'🏃', 'Leisurely':'🧩', 'Both':'⚡', 'Board Game':'🎲', 'Card Game':'🃏', 'Video Game':'🕹️' };
-  return map[type] || '🎮';
-}
-
-function locationEmoji(loc) {
-  if (loc === 'Indoors') return '🏠 Indoors';
-  if (loc === 'Outdoors') return '🌳 Outdoors';
-  return '🌤️ Indoors or Out';
+  return { 'Physical':'🏃','Leisurely':'🧩','Both':'⚡','Board Game':'🎲','Card Game':'🃏','Video Game':'🕹️' }[type] || '🎮';
 }
 
 function renderGame(g) {
   const card = document.getElementById('resultCard');
   const content = document.getElementById('resultContent');
-
-  const tags = g.tags ? g.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
-  const players = g.minPlayers === g.maxPlayers
-    ? `${g.minPlayers} player${g.minPlayers > 1 ? 's' : ''}`
-    : `${g.minPlayers}–${g.maxPlayers} players`;
-  const ages = `Ages ${g.minAge}–${g.maxAge}`;
+  const tags = g.tags ? g.tags.split(',').map(t=>t.trim()).filter(Boolean) : [];
+  const players = g.minPlayers === g.maxPlayers ? `${g.minPlayers} player${g.minPlayers>1?'s':''}` : `${g.minPlayers}–${g.maxPlayers} players`;
+  const locLabel = g.location==='Indoors' ? '🏠 Indoors' : g.location==='Outdoors' ? '🌳 Outdoors' : '🌤️ Indoors or Out';
 
   content.innerHTML = `
     <div style="display:flex;align-items:center;flex-wrap:wrap;margin-bottom:4px;">
-      <span class="result-type-badge badge-${g.type}">${typeEmoji(g.type)} ${g.type}</span>
-      ${g.educational === 'Yes' || g.educational === 'Partly'
-        ? `<span class="edu-badge">📚 ${g.educational === 'Partly' ? 'Partly Educational' : 'Educational'}</span>`
-        : ''}
+      <span class="result-type-badge">${typeEmoji(g.type)} ${g.type}</span>
+      ${g.educational==='Yes'||g.educational==='Partly'
+        ?`<span class="edu-badge">📚 ${g.educational==='Partly'?'Partly Educational':'Educational'}</span>`:''}
     </div>
     <div class="result-name">${g.name}</div>
     <div class="result-desc">${g.description}</div>
     <div class="result-meta">
-      <div class="meta-item">
-        <div class="meta-label">👥 Players</div>
-        <div class="meta-value">${players}</div>
-      </div>
-      <div class="meta-item">
-        <div class="meta-label">⏱️ Duration</div>
-        <div class="meta-value">~${g.duration} mins</div>
-      </div>
-      <div class="meta-item">
-        <div class="meta-label">🎂 Ages</div>
-        <div class="meta-value">${ages}</div>
-      </div>
-      <div class="meta-item">
-        <div class="meta-label">📍 Location</div>
-        <div class="meta-value">${locationEmoji(g.location)}</div>
-      </div>
+      <div class="meta-item"><div class="meta-label">👥 Players</div><div class="meta-value">${players}</div></div>
+      <div class="meta-item"><div class="meta-label">⏱️ Duration</div><div class="meta-value">~${g.duration} mins</div></div>
+      <div class="meta-item"><div class="meta-label">🎂 Ages</div><div class="meta-value">Ages ${g.minAge}–${g.maxAge}</div></div>
+      <div class="meta-item"><div class="meta-label">📍 Location</div><div class="meta-value">${locLabel}</div></div>
     </div>
-    ${g.equipment && g.equipment !== 'None'
-      ? `<div class="meta-item" style="margin-bottom:14px;">
-           <div class="meta-label">🎒 You'll need</div>
-           <div class="meta-value">${g.equipment}</div>
-         </div>`
-      : `<div class="meta-item" style="margin-bottom:14px;">
-           <div class="meta-label">🎒 Equipment</div>
-           <div class="meta-value">Nothing needed!</div>
-         </div>`}
-    ${tags.length
-      ? `<div class="tags-row">${tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>`
-      : ''}
-    ${g.notes
-      ? `<div class="result-notes">💬 ${g.notes}</div>`
-      : ''}
-    ${g.sourceUrl
-      ? `<a class="source-link" href="${g.sourceUrl}" target="_blank">🔗 Learn more about this game</a><br>`
-      : ''}
+    <div class="meta-item" style="margin-bottom:14px;">
+      <div class="meta-label">🎒 ${g.equipment&&g.equipment!=='None'?'You\'ll need':'Equipment'}</div>
+      <div class="meta-value">${g.equipment&&g.equipment!=='None'?g.equipment:'Nothing needed!'}</div>
+    </div>
+    ${tags.length?`<div class="tags-row">${tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`:''}
+    ${g.notes?`<div class="result-notes">💬 ${g.notes}</div>`:''}
+    ${g.sourceUrl?`<a class="source-link" href="${g.sourceUrl}" target="_blank">🔗 Learn more about this game</a><br>`:''}
   `;
 
-  // Re-trigger animation
   card.classList.remove('visible');
   void card.offsetWidth;
   card.classList.add('visible');
-
-  // Scroll to card
   setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
 }
 
-// ── INIT ──────────────────────────────────────────────────────────────────
 loadGames();
 </script>
 </body>
