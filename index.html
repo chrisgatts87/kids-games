@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kids Game Picker</title>
+<title>Game Genie</title>
 <meta name="description" content="Find the perfect game for your kids right now">
 <meta name="theme-color" content="#6d28d9">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Game Picker">
+<meta name="apple-mobile-web-app-title" content="Game Genie">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -26,415 +26,203 @@
     --shadow: 0 8px 32px rgba(124,58,237,0.15);
     --radius: 20px;
   }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Nunito',sans-serif; background:var(--bg); color:var(--text); min-height:100vh;
+    background-image: radial-gradient(circle at 10% 10%,rgba(192,132,252,0.25) 0%,transparent 40%),
+      radial-gradient(circle at 90% 90%,rgba(124,58,237,0.15) 0%,transparent 40%); }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  /* NAV */
+  .nav { background:linear-gradient(135deg,var(--primary-dark),var(--primary),var(--accent));
+    padding:0 16px; display:flex; align-items:flex-end; gap:4px; padding-top:20px; }
+  .nav-tab { padding:12px 20px 10px; border-radius:14px 14px 0 0; font-family:'Fredoka One',cursive;
+    font-size:1rem; cursor:pointer; transition:all 0.2s; border:none;
+    background:rgba(255,255,255,0.15); color:rgba(255,255,255,0.7); letter-spacing:0.02em; }
+  .nav-tab.active { background:var(--bg); color:var(--primary); font-size:1.05rem; }
+  .nav-title { flex:1; text-align:right; padding-bottom:12px; font-family:'Fredoka One',cursive;
+    font-size:1.4rem; color:rgba(255,255,255,0.95); letter-spacing:0.03em; }
 
-  body {
-    font-family: 'Nunito', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    background-image:
-      radial-gradient(circle at 10% 10%, rgba(192,132,252,0.25) 0%, transparent 40%),
-      radial-gradient(circle at 90% 90%, rgba(124,58,237,0.15) 0%, transparent 40%);
-  }
+  /* PAGES */
+  .page { display:none; }
+  .page.active { display:block; }
+  .container { max-width:600px; margin:0 auto; padding:20px 16px 40px; }
 
-  /* ── NAV TABS ─────────────────────────────────────────── */
-  .nav {
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary), var(--accent));
-    padding: 0 16px;
-    display: flex;
-    align-items: flex-end;
-    gap: 4px;
-    padding-top: 20px;
-  }
+  /* PICK BUTTON */
+  .pick-btn { width:100%; padding:20px; border-radius:var(--radius); border:none;
+    background:linear-gradient(135deg,var(--primary),var(--accent)); color:white;
+    font-family:'Fredoka One',cursive; font-size:1.6rem; cursor:pointer;
+    box-shadow:0 6px 24px rgba(124,58,237,0.45); transition:all 0.2s; margin-bottom:16px; }
+  .pick-btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(124,58,237,0.55); }
+  .pick-btn:active { transform:scale(0.98); }
 
-  .nav-tab {
-    padding: 12px 20px 10px;
-    border-radius: 14px 14px 0 0;
-    font-family: 'Fredoka One', cursive;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: none;
-    background: rgba(255,255,255,0.15);
-    color: rgba(255,255,255,0.7);
-    letter-spacing: 0.02em;
-  }
+  /* SEARCH */
+  .search-wrap { position:relative; margin-bottom:16px; }
+  .search-icon { position:absolute; left:16px; top:50%; transform:translateY(-50%); font-size:1.1rem; pointer-events:none; }
+  .search-input { width:100%; padding:14px 42px 14px 44px; border-radius:var(--radius);
+    border:2px solid rgba(124,58,237,0.2); background:white; font-family:'Nunito',sans-serif;
+    font-size:1rem; font-weight:700; color:var(--text); box-shadow:var(--shadow); outline:none; transition:border-color 0.2s; }
+  .search-input:focus { border-color:var(--primary); }
+  .search-input::placeholder { color:var(--muted); font-weight:600; }
+  .search-clear { position:absolute; right:14px; top:50%; transform:translateY(-50%);
+    background:var(--secondary); border:none; border-radius:50%; width:24px; height:24px;
+    cursor:pointer; font-size:0.75rem; color:white; display:none; align-items:center; justify-content:center; font-weight:800; }
+  .search-clear.visible { display:flex; }
 
-  .nav-tab.active {
-    background: var(--bg);
-    color: var(--primary);
-    font-size: 1.05rem;
-  }
+  /* FILTERS */
+  .filters { background:var(--card); border-radius:var(--radius); padding:20px;
+    margin-bottom:16px; box-shadow:var(--shadow); border:2px solid rgba(124,58,237,0.08); }
+  .filters-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; cursor:pointer; user-select:none; }
+  .filters h2 { font-family:'Fredoka One',cursive; font-size:1.1rem; color:var(--primary); display:flex; align-items:center; gap:8px; }
+  .filters-toggle { font-size:0.8rem; font-weight:700; color:var(--muted); background:rgba(124,58,237,0.08); padding:4px 10px; border-radius:100px; }
+  .filters-body { display:block; }
+  .filters-body.collapsed { display:none; }
+  .filter-group { margin-bottom:14px; }
+  .filter-group:last-child { margin-bottom:0; }
+  .filter-group label { display:block; font-size:0.75rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted); margin-bottom:8px; }
+  .chip-row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .chip { padding:6px 14px; border-radius:100px; border:2px solid rgba(124,58,237,0.15); background:white;
+    font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer; transition:all 0.18s; color:var(--text); user-select:none; }
+  .chip:active { transform:scale(0.95); }
+  .chip.active-physical,.chip.active-indoors,.chip.active-yes,.chip.active-999 { background:#7c3aed;border-color:#7c3aed;color:white; }
+  .chip.active-leisurely,.chip.active-partly,.chip.active-20 { background:#9d5eff;border-color:#9d5eff;color:white; }
+  .chip.active-both,.chip.active-either,.chip.active-no { background:#c084fc;border-color:#c084fc;color:white; }
+  .chip.active-videogame { background:#5b21b6;border-color:#5b21b6;color:white; }
+  .chip.active-boardgame { background:#e879f9;border-color:#e879f9;color:white; }
+  .chip.active-cardgame,.chip.active-outdoors { background:#a855f7;border-color:#a855f7;color:white; }
+  .chip.active-10 { background:#e879f9;border-color:#e879f9;color:white; }
+  .chip.active-30 { background:#7c3aed;border-color:#7c3aed;color:white; }
+  .age-input-wrap { display:flex; align-items:center; gap:10px; }
+  .age-input { width:70px; padding:6px 10px; border-radius:100px; border:2px solid rgba(124,58,237,0.2);
+    font-family:'Nunito',sans-serif; font-size:0.9rem; font-weight:700; color:var(--text);
+    text-align:center; outline:none; transition:border-color 0.2s; background:white; }
+  .age-input:focus { border-color:var(--primary); }
+  .age-clear { font-size:0.75rem; font-weight:700; color:var(--muted); cursor:pointer; background:none; border:none; padding:4px 8px; }
+  .age-clear:hover { color:var(--primary); }
+  .count-badge { display:inline-block; background:linear-gradient(135deg,var(--primary),var(--accent));
+    color:white; font-size:0.75rem; font-weight:800; padding:2px 10px; border-radius:100px; margin-left:6px; }
 
-  .nav-title {
-    flex: 1;
-    text-align: right;
-    padding-bottom: 12px;
-    font-family: 'Fredoka One', cursive;
-    font-size: 1.3rem;
-    color: rgba(255,255,255,0.9);
-    letter-spacing: 0.02em;
-  }
+  /* SEARCH RESULTS */
+  .search-results { display:none; background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+    border:2px solid rgba(124,58,237,0.1); overflow:hidden; margin-bottom:16px; }
+  .search-results.visible { display:block; }
+  .search-result-header { padding:12px 18px; background:rgba(124,58,237,0.06); font-size:0.8rem;
+    font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid rgba(124,58,237,0.08); }
+  .search-result-item { padding:14px 18px; border-bottom:1px solid rgba(124,58,237,0.06); cursor:pointer; transition:background 0.15s; }
+  .search-result-item:last-child { border-bottom:none; }
+  .search-result-item:hover { background:rgba(124,58,237,0.04); }
+  .sri-name { font-weight:800; font-size:0.95rem; color:var(--text); margin-bottom:2px; }
+  .sri-meta { font-size:0.78rem; font-weight:600; color:var(--muted); }
+  mark { background:rgba(232,121,249,0.25); color:var(--primary-dark); border-radius:3px; padding:0 2px; }
 
-  /* ── PAGES ────────────────────────────────────────────── */
-  .page { display: none; }
-  .page.active { display: block; }
+  /* RESULT CARD */
+  .result-card { background:var(--card); border-radius:var(--radius); padding:24px;
+    box-shadow:0 8px 40px rgba(124,58,237,0.2); border:2px solid rgba(124,58,237,0.1);
+    display:none; animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1); margin-bottom:16px; }
+  .result-card.visible { display:block; }
+  @keyframes popIn { from{opacity:0;transform:scale(0.85) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+  .result-type-badge { display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:100px;
+    font-size:0.75rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:12px;
+    background:rgba(124,58,237,0.1); color:var(--primary); }
+  .edu-badge { display:inline-flex; align-items:center; gap:4px; background:rgba(232,121,249,0.15);
+    color:var(--accent); font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:100px; margin-bottom:12px; margin-left:6px; }
+  .result-name { font-family:'Fredoka One',cursive; font-size:clamp(1.6rem,6vw,2.2rem); line-height:1.1; margin-bottom:10px;
+    background:linear-gradient(135deg,var(--primary-dark),var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .result-desc { color:var(--muted); font-size:0.95rem; line-height:1.6; margin-bottom:18px; font-weight:600; }
+  .result-meta { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+  .meta-item { background:rgba(124,58,237,0.05); border-radius:12px; padding:10px 12px; border:1px solid rgba(124,58,237,0.08); }
+  .meta-label { font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:var(--secondary); margin-bottom:2px; }
+  .meta-value { font-size:0.95rem; font-weight:700; color:var(--text); }
+  .tags-row { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
+  .tag { padding:3px 10px; border-radius:100px; background:rgba(124,58,237,0.08); font-size:0.75rem; font-weight:700; color:var(--primary); }
+  .result-notes { background:rgba(192,132,252,0.12); border-left:3px solid var(--secondary); border-radius:0 8px 8px 0;
+    padding:10px 14px; font-size:0.875rem; font-weight:600; color:var(--text); margin-bottom:16px; }
+  .source-link { display:inline-flex; align-items:center; gap:6px; font-size:0.8rem; font-weight:700; color:var(--primary); text-decoration:none; margin-bottom:18px; }
+  .source-link:hover { text-decoration:underline; }
+  .again-btn { width:100%; padding:14px; border-radius:var(--radius); border:2px solid var(--primary);
+    background:white; color:var(--primary); font-family:'Fredoka One',cursive; font-size:1.1rem; cursor:pointer; transition:all 0.2s; }
+  .again-btn:hover { background:var(--primary); color:white; }
 
-  .container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px 16px 40px;
-  }
+  /* NO RESULTS / STATUS */
+  .no-results { text-align:center; padding:30px 20px; background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom:16px; }
+  .no-results .emoji { font-size:3rem; margin-bottom:10px; }
+  .no-results p { color:var(--muted); font-weight:700; }
+  .status { text-align:center; padding:20px; color:var(--muted); font-weight:600; font-size:0.9rem; }
 
-  /* ── PICK BUTTON ──────────────────────────────────────── */
-  .pick-btn {
-    width: 100%;
-    padding: 20px;
-    border-radius: var(--radius);
-    border: none;
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    color: white;
-    font-family: 'Fredoka One', cursive;
-    font-size: 1.6rem;
-    cursor: pointer;
-    box-shadow: 0 6px 24px rgba(124,58,237,0.45);
-    transition: all 0.2s;
-    margin-bottom: 16px;
-  }
-  .pick-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(124,58,237,0.55); }
-  .pick-btn:active { transform: scale(0.98); }
+  /* ═══════════════════════════════════════════ */
+  /* STORIES PAGE                               */
+  /* ═══════════════════════════════════════════ */
+  .story-hero { background:linear-gradient(135deg,#1e1033 0%,#4c1d95 50%,#7c3aed 100%);
+    border-radius:0 0 30px 30px; padding:28px 20px 32px; text-align:center; margin-bottom:20px; position:relative; overflow:hidden; }
+  .story-hero::before { content:'⭐✨🌙🌟💫'; position:absolute; font-size:1.2rem; top:10px; left:0; right:0; letter-spacing:12px; opacity:0.4; }
+  .story-hero h2 { font-family:'Fredoka One',cursive; font-size:clamp(1.8rem,7vw,2.8rem); color:white; margin-bottom:6px; text-shadow:0 2px 12px rgba(0,0,0,0.3); }
+  .story-hero p { color:rgba(255,255,255,0.75); font-weight:600; font-size:0.95rem; }
 
-  /* ── SEARCH ───────────────────────────────────────────── */
-  .search-wrap { position: relative; margin-bottom: 16px; }
-  .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 1.1rem; pointer-events: none; }
-  .search-input {
-    width: 100%; padding: 14px 42px 14px 44px;
-    border-radius: var(--radius); border: 2px solid rgba(124,58,237,0.2);
-    background: white; font-family: 'Nunito', sans-serif; font-size: 1rem;
-    font-weight: 700; color: var(--text); box-shadow: var(--shadow); outline: none; transition: border-color 0.2s;
-  }
-  .search-input:focus { border-color: var(--primary); }
-  .search-input::placeholder { color: var(--muted); font-weight: 600; }
-  .search-clear {
-    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-    background: var(--secondary); border: none; border-radius: 50%; width: 24px; height: 24px;
-    cursor: pointer; font-size: 0.75rem; color: white; display: none; align-items: center; justify-content: center; font-weight: 800;
-  }
-  .search-clear.visible { display: flex; }
+  .story-generate-btn { width:100%; padding:20px; border-radius:var(--radius); border:none;
+    background:linear-gradient(135deg,#1e1033,#7c3aed,#e879f9); color:white;
+    font-family:'Fredoka One',cursive; font-size:1.5rem; cursor:pointer;
+    box-shadow:0 6px 24px rgba(124,58,237,0.5); transition:all 0.2s; margin-bottom:16px; }
+  .story-generate-btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(124,58,237,0.6); }
+  .story-generate-btn:active { transform:scale(0.98); }
 
-  /* ── FILTERS ──────────────────────────────────────────── */
-  .filters {
-    background: var(--card); border-radius: var(--radius); padding: 20px;
-    margin-bottom: 16px; box-shadow: var(--shadow); border: 2px solid rgba(124,58,237,0.08);
-  }
-  .filters-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; cursor: pointer; user-select: none; }
-  .filters h2 { font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--primary); display: flex; align-items: center; gap: 8px; }
-  .filters-toggle { font-size: 0.8rem; font-weight: 700; color: var(--muted); background: rgba(124,58,237,0.08); padding: 4px 10px; border-radius: 100px; }
-  .filters-body { display: block; }
-  .filters-body.collapsed { display: none; }
-  .filter-group { margin-bottom: 14px; }
-  .filter-group:last-child { margin-bottom: 0; }
-  .filter-group label { display: block; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 8px; }
-  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .chip {
-    padding: 6px 14px; border-radius: 100px; border: 2px solid rgba(124,58,237,0.15);
-    background: white; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700;
-    cursor: pointer; transition: all 0.18s; color: var(--text); user-select: none;
-  }
-  .chip:active { transform: scale(0.95); }
-  .chip.active-physical,.chip.active-indoors,.chip.active-yes,.chip.active-999 { background: #7c3aed; border-color: #7c3aed; color: white; }
-  .chip.active-leisurely,.chip.active-partly,.chip.active-20 { background: #9d5eff; border-color: #9d5eff; color: white; }
-  .chip.active-both,.chip.active-either,.chip.active-no { background: #c084fc; border-color: #c084fc; color: white; }
-  .chip.active-videogame { background: #5b21b6; border-color: #5b21b6; color: white; }
-  .chip.active-boardgame { background: #e879f9; border-color: #e879f9; color: white; }
-  .chip.active-cardgame,.chip.active-outdoors { background: #a855f7; border-color: #a855f7; color: white; }
-  .chip.active-10 { background: #e879f9; border-color: #e879f9; color: white; }
-  .chip.active-30 { background: #7c3aed; border-color: #7c3aed; color: white; }
+  .story-keyword-card { background:var(--card); border-radius:var(--radius); padding:20px;
+    margin-bottom:16px; box-shadow:var(--shadow); border:2px solid rgba(124,58,237,0.08); }
+  .story-keyword-card h3 { font-family:'Fredoka One',cursive; font-size:1rem; color:var(--primary); margin-bottom:14px; display:flex; align-items:center; gap:8px; }
 
-  /* Age input */
-  .age-input-wrap { display: flex; align-items: center; gap: 10px; }
-  .age-input {
-    width: 70px; padding: 6px 10px; border-radius: 100px; border: 2px solid rgba(124,58,237,0.2);
-    font-family: 'Nunito', sans-serif; font-size: 0.9rem; font-weight: 700; color: var(--text);
-    text-align: center; outline: none; transition: border-color 0.2s; background: white;
-  }
-  .age-input:focus { border-color: var(--primary); }
-  .age-clear { font-size: 0.75rem; font-weight: 700; color: var(--muted); cursor: pointer; background: none; border: none; padding: 4px 8px; }
-  .age-clear:hover { color: var(--primary); }
+  /* SINGLE COLUMN keyword list */
+  .keyword-list { display:flex; flex-direction:column; gap:10px; }
 
-  .count-badge {
-    display: inline-block; background: linear-gradient(135deg, var(--primary), var(--accent));
-    color: white; font-size: 0.75rem; font-weight: 800; padding: 2px 10px; border-radius: 100px; margin-left: 6px;
-  }
+  .keyword-item { background:rgba(124,58,237,0.05); border-radius:14px; padding:14px 16px;
+    border:1px solid rgba(124,58,237,0.1); cursor:pointer; transition:all 0.2s;
+    display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .keyword-item:hover { background:rgba(124,58,237,0.1); border-color:rgba(124,58,237,0.25); }
+  .keyword-item:active { transform:scale(0.98); }
+  .keyword-item.locked { border-color:rgba(124,58,237,0.4); background:rgba(124,58,237,0.08); }
 
-  /* ── SEARCH RESULTS ───────────────────────────────────── */
-  .search-results { display: none; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); border: 2px solid rgba(124,58,237,0.1); overflow: hidden; margin-bottom: 16px; }
-  .search-results.visible { display: block; }
-  .search-result-header { padding: 12px 18px; background: rgba(124,58,237,0.06); font-size: 0.8rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid rgba(124,58,237,0.08); }
-  .search-result-item { padding: 14px 18px; border-bottom: 1px solid rgba(124,58,237,0.06); cursor: pointer; transition: background 0.15s; }
-  .search-result-item:last-child { border-bottom: none; }
-  .search-result-item:hover { background: rgba(124,58,237,0.04); }
-  .sri-name { font-weight: 800; font-size: 0.95rem; color: var(--text); margin-bottom: 2px; }
-  .sri-meta { font-size: 0.78rem; font-weight: 600; color: var(--muted); }
-  mark { background: rgba(232,121,249,0.25); color: var(--primary-dark); border-radius: 3px; padding: 0 2px; }
+  .keyword-left { flex:1; }
+  .keyword-label { font-size:0.7rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:var(--secondary); margin-bottom:3px; }
+  .keyword-value { font-size:1rem; font-weight:800; color:var(--text); line-height:1.3; }
 
-  /* ── RESULT CARD ──────────────────────────────────────── */
-  .result-card {
-    background: var(--card); border-radius: var(--radius); padding: 24px;
-    box-shadow: 0 8px 40px rgba(124,58,237,0.2); border: 2px solid rgba(124,58,237,0.1);
-    display: none; animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); margin-bottom: 16px;
-  }
-  .result-card.visible { display: block; }
-  @keyframes popIn { from { opacity: 0; transform: scale(0.85) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-  .result-type-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 100px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; background: rgba(124,58,237,0.1); color: var(--primary); }
-  .edu-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(232,121,249,0.15); color: var(--accent); font-size: 0.75rem; font-weight: 800; padding: 4px 10px; border-radius: 100px; margin-bottom: 12px; margin-left: 6px; }
-  .result-name { font-family: 'Fredoka One', cursive; font-size: clamp(1.6rem, 6vw, 2.2rem); line-height: 1.1; margin-bottom: 10px; background: linear-gradient(135deg, var(--primary-dark), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-  .result-desc { color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 18px; font-weight: 600; }
-  .result-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-  .meta-item { background: rgba(124,58,237,0.05); border-radius: 12px; padding: 10px 12px; border: 1px solid rgba(124,58,237,0.08); }
-  .meta-label { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--secondary); margin-bottom: 2px; }
-  .meta-value { font-size: 0.95rem; font-weight: 700; color: var(--text); }
-  .tags-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-  .tag { padding: 3px 10px; border-radius: 100px; background: rgba(124,58,237,0.08); font-size: 0.75rem; font-weight: 700; color: var(--primary); }
-  .result-notes { background: rgba(192,132,252,0.12); border-left: 3px solid var(--secondary); border-radius: 0 8px 8px 0; padding: 10px 14px; font-size: 0.875rem; font-weight: 600; color: var(--text); margin-bottom: 16px; }
-  .source-link { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; color: var(--primary); text-decoration: none; margin-bottom: 18px; }
-  .source-link:hover { text-decoration: underline; }
-  .again-btn { width: 100%; padding: 14px; border-radius: var(--radius); border: 2px solid var(--primary); background: white; color: var(--primary); font-family: 'Fredoka One', cursive; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; }
-  .again-btn:hover { background: var(--primary); color: white; }
+  .keyword-right { display:flex; flex-direction:column; align-items:center; gap:4px; flex-shrink:0; }
+  .keyword-refresh-icon { font-size:1.1rem; opacity:0.35; transition:opacity 0.2s; }
+  .keyword-item:hover .keyword-refresh-icon { opacity:0.7; }
+  .keyword-item.locked .keyword-refresh-icon { opacity:0.15; }
+  .lock-btn { font-size:0.7rem; font-weight:700; color:var(--muted); background:none; border:none; cursor:pointer; white-space:nowrap; padding:2px 0; }
+  .lock-btn.locked { color:var(--primary); }
 
-  /* ── NO RESULTS / STATUS ──────────────────────────────── */
-  .no-results { text-align: center; padding: 30px 20px; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; }
-  .no-results .emoji { font-size: 3rem; margin-bottom: 10px; }
-  .no-results p { color: var(--muted); font-weight: 700; }
-  .status { text-align: center; padding: 20px; color: var(--muted); font-weight: 600; font-size: 0.9rem; }
+  /* Step numbers */
+  .keyword-step { width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--accent));
+    color:white; font-family:'Fredoka One',cursive; font-size:0.85rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 
-  /* ══════════════════════════════════════════════════════ */
-  /* ── STORY GENERATOR ──────────────────────────────────── */
-  /* ══════════════════════════════════════════════════════ */
-
-  .story-hero {
-    background: linear-gradient(135deg, #1e1033 0%, #4c1d95 50%, #7c3aed 100%);
-    border-radius: 0 0 30px 30px;
-    padding: 28px 20px 32px;
-    text-align: center;
-    margin-bottom: 20px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .story-hero::before {
-    content: '⭐✨🌙🌟💫';
-    position: absolute;
-    font-size: 1.2rem;
-    top: 10px; left: 0; right: 0;
-    letter-spacing: 12px;
-    opacity: 0.4;
-  }
-
-  .story-hero h2 {
-    font-family: 'Fredoka One', cursive;
-    font-size: clamp(1.8rem, 7vw, 2.8rem);
-    color: white;
-    margin-bottom: 6px;
-    text-shadow: 0 2px 12px rgba(0,0,0,0.3);
-  }
-
-  .story-hero p {
-    color: rgba(255,255,255,0.75);
-    font-weight: 600;
-    font-size: 0.95rem;
-  }
-
-  .story-generate-btn {
-    width: 100%;
-    padding: 20px;
-    border-radius: var(--radius);
-    border: none;
-    background: linear-gradient(135deg, #1e1033, #7c3aed, #e879f9);
-    color: white;
-    font-family: 'Fredoka One', cursive;
-    font-size: 1.5rem;
-    cursor: pointer;
-    box-shadow: 0 6px 24px rgba(124,58,237,0.5);
-    transition: all 0.2s;
-    margin-bottom: 16px;
-  }
-  .story-generate-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(124,58,237,0.6); }
-  .story-generate-btn:active { transform: scale(0.98); }
-
-  .story-keyword-card {
-    background: var(--card);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 16px;
-    box-shadow: var(--shadow);
-    border: 2px solid rgba(124,58,237,0.08);
-  }
-
-  .story-keyword-card h3 {
-    font-family: 'Fredoka One', cursive;
-    font-size: 1rem;
-    color: var(--primary);
-    margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .keyword-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-
-  .keyword-item {
-    background: rgba(124,58,237,0.05);
-    border-radius: 14px;
-    padding: 12px 14px;
-    border: 1px solid rgba(124,58,237,0.1);
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-  }
-
-  .keyword-item:hover { background: rgba(124,58,237,0.1); border-color: rgba(124,58,237,0.25); }
-  .keyword-item:active { transform: scale(0.97); }
-
-  .keyword-label {
-    font-size: 0.68rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--secondary);
-    margin-bottom: 4px;
-  }
-
-  .keyword-value {
-    font-size: 1rem;
-    font-weight: 800;
-    color: var(--text);
-    line-height: 1.2;
-  }
-
-  .keyword-refresh {
-    position: absolute;
-    top: 8px; right: 8px;
-    font-size: 0.85rem;
-    opacity: 0.4;
-    transition: opacity 0.2s;
-  }
-
-  .keyword-item:hover .keyword-refresh { opacity: 0.8; }
-
-  /* Story result card */
-  .story-result {
-    background: linear-gradient(135deg, #1e1033 0%, #2d1b69 100%);
-    border-radius: var(--radius);
-    padding: 24px;
-    margin-bottom: 16px;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.3);
-    display: none;
-    animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  .story-result.visible { display: block; }
-
-  .story-result-title {
-    font-family: 'Fredoka One', cursive;
-    font-size: 1rem;
-    color: var(--accent);
-    margin-bottom: 16px;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-
-  .story-prompt-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-
-  .story-prompt-item {
-    background: rgba(255,255,255,0.07);
-    border-radius: 14px;
-    padding: 12px 14px;
-    border: 1px solid rgba(255,255,255,0.1);
-  }
-
-  .story-prompt-label {
-    font-size: 0.68rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: rgba(192,132,252,0.8);
-    margin-bottom: 4px;
-  }
-
-  .story-prompt-value {
-    font-size: 1.05rem;
-    font-weight: 800;
-    color: white;
-    line-height: 1.2;
-  }
-
-  .story-tip {
-    background: rgba(232,121,249,0.12);
-    border-left: 3px solid var(--accent);
-    border-radius: 0 10px 10px 0;
-    padding: 12px 14px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: rgba(255,255,255,0.8);
-    line-height: 1.5;
-    margin-bottom: 16px;
-  }
-
-  .story-again-btn {
-    width: 100%;
-    padding: 14px;
-    border-radius: var(--radius);
-    border: 2px solid rgba(232,121,249,0.5);
-    background: transparent;
-    color: var(--accent);
-    font-family: 'Fredoka One', cursive;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .story-again-btn:hover { background: rgba(232,121,249,0.15); }
-
-  /* Custom toggles for story keyword locking */
-  .lock-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--muted);
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 2px 0;
-    margin-top: 4px;
-  }
-
-  .lock-btn.locked { color: var(--primary); }
+  /* Story result */
+  .story-result { background:linear-gradient(135deg,#1e1033 0%,#2d1b69 100%); border-radius:var(--radius);
+    padding:24px; margin-bottom:16px; box-shadow:0 8px 40px rgba(0,0,0,0.3); display:none;
+    animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+  .story-result.visible { display:block; }
+  .story-result-title { font-family:'Fredoka One',cursive; font-size:1rem; color:var(--accent);
+    margin-bottom:16px; letter-spacing:0.05em; text-transform:uppercase; }
+  .story-prompt-list { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
+  .story-prompt-item { background:rgba(255,255,255,0.07); border-radius:14px; padding:12px 16px;
+    border:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; gap:12px; }
+  .story-prompt-step { width:26px; height:26px; border-radius:50%; background:rgba(232,121,249,0.3);
+    color:var(--accent); font-family:'Fredoka One',cursive; font-size:0.8rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .story-prompt-label { font-size:0.68rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:rgba(192,132,252,0.8); margin-bottom:3px; }
+  .story-prompt-value { font-size:0.95rem; font-weight:800; color:white; line-height:1.2; }
+  .story-tip { background:rgba(232,121,249,0.12); border-left:3px solid var(--accent); border-radius:0 10px 10px 0;
+    padding:12px 14px; font-size:0.875rem; font-weight:600; color:rgba(255,255,255,0.8); line-height:1.5; margin-bottom:16px; }
+  .story-again-btn { width:100%; padding:14px; border-radius:var(--radius); border:2px solid rgba(232,121,249,0.5);
+    background:transparent; color:var(--accent); font-family:'Fredoka One',cursive; font-size:1.1rem; cursor:pointer; transition:all 0.2s; }
+  .story-again-btn:hover { background:rgba(232,121,249,0.15); }
 </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav class="nav">
-  <button class="nav-tab active" onclick="switchTab('games')">🎮 Games</button>
-  <button class="nav-tab" onclick="switchTab('stories')">📖 Stories</button>
-  <span class="nav-title">Game Picker</span>
+  <button class="nav-tab active" onclick="switchTab('games',this)">🎮 Games</button>
+  <button class="nav-tab" onclick="switchTab('stories',this)">📖 Stories</button>
+  <span class="nav-title">✨ Game Genie</span>
 </nav>
 
-<!-- ══════════════ GAMES PAGE ══════════════ -->
+<!-- ════════════ GAMES PAGE ════════════ -->
 <div class="page active" id="page-games">
 <div class="container">
 
@@ -523,89 +311,71 @@
   </div>
 
   <div class="status" id="status">Loading games...</div>
-
 </div>
 </div>
 
-<!-- ══════════════ STORIES PAGE ══════════════ -->
+<!-- ════════════ STORIES PAGE ════════════ -->
 <div class="page" id="page-stories">
-
   <div class="story-hero">
-    <h2>✨ Story Generator</h2>
-    <p>Create a magical bedtime story prompt</p>
+    <h2>✨ Story Maker</h2>
+    <p>Create a magical bedtime story</p>
   </div>
-
   <div class="container">
 
-    <button class="story-generate-btn" onclick="generateStory()">🌙 Generate Story Prompt!</button>
+    <button class="story-generate-btn" onclick="generateStory()">🌙 Make My Story!</button>
 
     <div class="story-keyword-card">
-      <h3>🔒 Lock keywords to keep them</h3>
-      <div class="keyword-grid" id="keywordGrid">
-        <!-- Filled by JS -->
-      </div>
+      <h3>💡 Tap a word to change it — tap 🔒 to keep it!</h3>
+      <div class="keyword-list" id="keywordList"></div>
     </div>
 
     <div class="story-result" id="storyResult">
-      <div class="story-result-title">✨ Your Story Prompt</div>
-      <div class="story-prompt-grid" id="storyPromptGrid"></div>
+      <div class="story-result-title">✨ Your Story!</div>
+      <div class="story-prompt-list" id="storyPromptList"></div>
       <div class="story-tip" id="storyTip"></div>
-      <button class="story-again-btn" onclick="generateStory()">🔀 New Story Prompt!</button>
+      <button class="story-again-btn" onclick="generateStory()">🔀 Try a Different Story!</button>
     </div>
 
   </div>
 </div>
 
 <script>
-// ════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // GAMES
-// ════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 const SHEET_ID = '12D5fJgiggMLFqHqdtlKr-gtmSQDydrQBH3y5haWoIZs';
 const SHEET_NAME = 'Games';
-const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+const GURL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
 
-let allGames = [];
-let filters = { type: null, location: null, educational: null, duration: null, age: null };
-let lastPicked = null;
-let filtersOpen = true;
+let allGames = [], filters = {type:null,location:null,educational:null,duration:null,age:null}, lastPicked = null, filtersOpen = true;
 
 async function loadGames() {
   try {
-    const res = await fetch(URL);
-    const text = await res.text();
+    const text = await (await fetch(GURL)).text();
     const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
     allGames = json.table.rows.slice(1).map(row => {
-      const c = row.c;
-      const get = i => (c[i] && c[i].v != null) ? String(c[i].v).trim() : '';
-      return {
-        name: get(0), description: get(1), type: get(2), educational: get(3),
-        minPlayers: get(4), maxPlayers: get(5), minAge: parseInt(get(6)) || 0,
-        maxAge: parseInt(get(7)) || 99, duration: parseInt(get(8)) || 999,
-        location: get(9), equipment: get(10), tags: get(11),
-        notes: get(12), imageUrl: get(13), sourceUrl: get(14),
-      };
-    }).filter(g => g.name);
+      const c = row.c, get = i => (c[i]&&c[i].v!=null)?String(c[i].v).trim():'';
+      return { name:get(0),description:get(1),type:get(2),educational:get(3),
+        minPlayers:get(4),maxPlayers:get(5),minAge:parseInt(get(6))||0,maxAge:parseInt(get(7))||99,
+        duration:parseInt(get(8))||999,location:get(9),equipment:get(10),
+        tags:get(11),notes:get(12),imageUrl:get(13),sourceUrl:get(14) };
+    }).filter(g=>g.name);
     document.getElementById('status').textContent = '';
     updateCount();
-  } catch(e) {
-    document.getElementById('status').textContent = '⚠️ Could not load games. Check your internet connection.';
-  }
+  } catch(e) { document.getElementById('status').textContent = '⚠️ Could not load games. Check your internet connection.'; }
 }
 
 function getFiltered() {
   return allGames.filter(g => {
-    if (filters.type && g.type !== filters.type) return false;
-    if (filters.educational && g.educational !== filters.educational) return false;
-    if (filters.duration && g.duration > parseInt(filters.duration)) return false;
-    if (filters.age !== null) {
-      if (g.minAge > filters.age || g.maxAge < filters.age) return false;
-    }
+    if (filters.type && g.type!==filters.type) return false;
+    if (filters.educational && g.educational!==filters.educational) return false;
+    if (filters.duration && g.duration>parseInt(filters.duration)) return false;
+    if (filters.age!==null && (g.minAge>filters.age||g.maxAge<filters.age)) return false;
     if (filters.location) {
-      const loc = g.location.toLowerCase();
-      const f = filters.location.toLowerCase();
-      if (f === 'indoors' && loc !== 'indoors' && loc !== 'both') return false;
-      if (f === 'outdoors' && loc !== 'outdoors' && loc !== 'both') return false;
-      if (f === 'both' && loc !== 'both') return false;
+      const loc=g.location.toLowerCase(), f=filters.location.toLowerCase();
+      if (f==='indoors'&&loc!=='indoors'&&loc!=='both') return false;
+      if (f==='outdoors'&&loc!=='outdoors'&&loc!=='both') return false;
+      if (f==='both'&&loc!=='both') return false;
     }
     return true;
   });
@@ -613,109 +383,88 @@ function getFiltered() {
 
 function updateCount() {
   const n = getFiltered().length;
-  document.getElementById('matchCount').textContent = n + ' game' + (n !== 1 ? 's' : '');
+  document.getElementById('matchCount').textContent = n+' game'+(n!==1?'s':'');
 }
 
 function toggleFilters() {
   filtersOpen = !filtersOpen;
-  document.getElementById('filtersBody').className = filtersOpen ? 'filters-body' : 'filters-body collapsed';
-  document.getElementById('filtersToggle').textContent = filtersOpen ? 'Hide ▲' : 'Show ▼';
+  document.getElementById('filtersBody').className = filtersOpen?'filters-body':'filters-body collapsed';
+  document.getElementById('filtersToggle').textContent = filtersOpen?'Hide ▲':'Show ▼';
 }
 
 document.querySelectorAll('.chip').forEach(chip => {
   chip.addEventListener('click', () => {
-    const k = chip.dataset.filter, v = chip.dataset.value;
-    if (filters[k] === v) { filters[k] = null; chip.className = 'chip'; }
+    const k=chip.dataset.filter, v=chip.dataset.value;
+    if (filters[k]===v) { filters[k]=null; chip.className='chip'; }
     else {
-      document.querySelectorAll(`.chip[data-filter="${k}"]`).forEach(c => c.className = 'chip');
-      filters[k] = v;
-      chip.classList.add('active-' + v.replace(/\s/g,'').toLowerCase());
+      document.querySelectorAll(`.chip[data-filter="${k}"]`).forEach(c=>c.className='chip');
+      filters[k]=v; chip.classList.add('active-'+v.replace(/\s/g,'').toLowerCase());
     }
     updateCount();
     document.getElementById('resultCard').classList.remove('visible');
-    document.getElementById('noResults').style.display = 'none';
+    document.getElementById('noResults').style.display='none';
   });
 });
 
 function onAgeFilter(val) {
-  const age = parseInt(val);
-  filters.age = (val && age >= 1 && age <= 12) ? age : null;
-  document.getElementById('ageClear').style.display = filters.age ? 'inline' : 'none';
-  document.getElementById('ageLabel').textContent = filters.age ? `Showing games for age ${filters.age}` : '';
+  const age=parseInt(val);
+  filters.age=(val&&age>=1&&age<=12)?age:null;
+  document.getElementById('ageClear').style.display=filters.age?'inline':'none';
+  document.getElementById('ageLabel').textContent=filters.age?`Showing games for age ${filters.age}`:'';
   updateCount();
   document.getElementById('resultCard').classList.remove('visible');
-  document.getElementById('noResults').style.display = 'none';
+  document.getElementById('noResults').style.display='none';
 }
 
-function clearAge() {
-  document.getElementById('ageInput').value = '';
-  onAgeFilter('');
-}
+function clearAge() { document.getElementById('ageInput').value=''; onAgeFilter(''); }
 
 function onSearch(query) {
-  const q = query.trim().toLowerCase();
-  document.getElementById('searchClear').className = q ? 'search-clear visible' : 'search-clear';
-  const resultsBox = document.getElementById('searchResults');
-  const resultList = document.getElementById('searchResultList');
-  const header = document.getElementById('searchResultHeader');
-  if (!q) { resultsBox.className = 'search-results'; return; }
-  const matches = allGames.filter(g =>
-    [g.name, g.description, g.tags, g.equipment, g.type, g.notes].join(' ').toLowerCase().includes(q)
-  );
-  if (matches.length === 0) {
-    header.textContent = 'No results found';
-    resultList.innerHTML = '<div style="padding:16px 18px;color:#7c6f9a;font-weight:600;font-size:0.9rem;">Try a different keyword</div>';
+  const q=query.trim().toLowerCase();
+  document.getElementById('searchClear').className=q?'search-clear visible':'search-clear';
+  const box=document.getElementById('searchResults');
+  if (!q) { box.className='search-results'; return; }
+  const matches=allGames.filter(g=>[g.name,g.description,g.tags,g.equipment,g.type,g.notes].join(' ').toLowerCase().includes(q));
+  const header=document.getElementById('searchResultHeader');
+  const list=document.getElementById('searchResultList');
+  const hi=(s,q)=>s.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),m=>`<mark>${m}</mark>`);
+  if (!matches.length) {
+    header.textContent='No results found';
+    list.innerHTML='<div style="padding:16px 18px;color:#7c6f9a;font-weight:600;font-size:0.9rem;">Try a different keyword</div>';
   } else {
-    header.textContent = matches.length + ' game' + (matches.length !== 1 ? 's' : '') + ' found';
-    const hi = (str, q) => str.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'), m => `<mark>${m}</mark>`);
-    resultList.innerHTML = matches.map(g => `
-      <div class="search-result-item" onclick="showGame('${g.name.replace(/'/g,"\\'")}')">
-        <div class="sri-name">${hi(g.name, q)}</div>
-        <div class="sri-meta">${g.type} · ${g.location} · ~${g.duration} mins · Ages ${g.minAge}–${g.maxAge}</div>
-      </div>`).join('');
+    header.textContent=matches.length+' game'+(matches.length!==1?'s':'')+' found';
+    list.innerHTML=matches.map(g=>`<div class="search-result-item" onclick="showGame('${g.name.replace(/'/g,"\\'")}')">
+      <div class="sri-name">${hi(g.name,q)}</div>
+      <div class="sri-meta">${g.type} · ${g.location} · ~${g.duration} mins · Ages ${g.minAge}–${g.maxAge}</div></div>`).join('');
   }
-  resultsBox.className = 'search-results visible';
+  box.className='search-results visible';
 }
 
-function clearSearch() {
-  document.getElementById('searchInput').value = '';
-  onSearch('');
-}
+function clearSearch() { document.getElementById('searchInput').value=''; onSearch(''); }
 
 function showGame(name) {
-  const game = allGames.find(x => x.name === name);
+  const game=allGames.find(x=>x.name===name);
   if (!game) return;
-  clearSearch();
-  lastPicked = game;
-  renderGame(game);
-  document.getElementById('noResults').style.display = 'none';
+  clearSearch(); lastPicked=game; renderGame(game);
+  document.getElementById('noResults').style.display='none';
 }
 
 function pickGame() {
-  const pool = getFiltered();
-  if (pool.length === 0) {
-    document.getElementById('resultCard').classList.remove('visible');
-    document.getElementById('noResults').style.display = 'block';
-    return;
-  }
-  document.getElementById('noResults').style.display = 'none';
-  clearSearch();
-  let candidates = pool.length > 1 ? pool.filter(g => g !== lastPicked) : pool;
-  const game = candidates[Math.floor(Math.random() * candidates.length)];
-  lastPicked = game;
-  renderGame(game);
+  const pool=getFiltered();
+  if (!pool.length) { document.getElementById('resultCard').classList.remove('visible'); document.getElementById('noResults').style.display='block'; return; }
+  document.getElementById('noResults').style.display='none'; clearSearch();
+  const candidates=pool.length>1?pool.filter(g=>g!==lastPicked):pool;
+  const game=candidates[Math.floor(Math.random()*candidates.length)];
+  lastPicked=game; renderGame(game);
 }
 
-function typeEmoji(type) {
-  return {'Physical':'🏃','Leisurely':'🧩','Both':'⚡','Board Game':'🎲','Card Game':'🃏','Video Game':'🕹️'}[type]||'🎮';
-}
+function typeEmoji(t) { return {'Physical':'🏃','Leisurely':'🧩','Both':'⚡','Board Game':'🎲','Card Game':'🃏','Video Game':'🕹️'}[t]||'🎮'; }
 
 function renderGame(g) {
-  const card = document.getElementById('resultCard');
-  const players = g.minPlayers === g.maxPlayers ? `${g.minPlayers} player${g.minPlayers>1?'s':''}` : `${g.minPlayers}–${g.maxPlayers} players`;
-  const locLabel = g.location==='Indoors'?'🏠 Indoors':g.location==='Outdoors'?'🌳 Outdoors':'🌤️ Indoors or Out';
-  const tags = g.tags ? g.tags.split(',').map(t=>t.trim()).filter(Boolean) : [];
-  document.getElementById('resultContent').innerHTML = `
+  const card=document.getElementById('resultCard');
+  const players=g.minPlayers===g.maxPlayers?`${g.minPlayers} player${g.minPlayers>1?'s':''}`:`${g.minPlayers}–${g.maxPlayers} players`;
+  const locLabel=g.location==='Indoors'?'🏠 Indoors':g.location==='Outdoors'?'🌳 Outdoors':'🌤️ Indoors or Out';
+  const tags=g.tags?g.tags.split(',').map(t=>t.trim()).filter(Boolean):[];
+  document.getElementById('resultContent').innerHTML=`
     <div style="display:flex;align-items:center;flex-wrap:wrap;margin-bottom:4px;">
       <span class="result-type-badge">${typeEmoji(g.type)} ${g.type}</span>
       ${g.educational==='Yes'||g.educational==='Partly'?`<span class="edu-badge">📚 ${g.educational==='Partly'?'Partly Educational':'Educational'}</span>`:''}
@@ -734,132 +483,113 @@ function renderGame(g) {
     </div>
     ${tags.length?`<div class="tags-row">${tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`:''}
     ${g.notes?`<div class="result-notes">💬 ${g.notes}</div>`:''}
-    ${g.sourceUrl?`<a class="source-link" href="${g.sourceUrl}" target="_blank">🔗 Learn more</a><br>`:''}
-  `;
-  card.classList.remove('visible');
-  void card.offsetWidth;
-  card.classList.add('visible');
-  setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+    ${g.sourceUrl?`<a class="source-link" href="${g.sourceUrl}" target="_blank">🔗 Learn more</a><br>`:''}`;
+  card.classList.remove('visible'); void card.offsetWidth; card.classList.add('visible');
+  setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
 }
 
-// ════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // TAB SWITCHING
-// ════════════════════════════════════════════════
-function switchTab(tab) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('page-' + tab).classList.add('active');
-  event.target.classList.add('active');
+// ═══════════════════════════════════════════════
+function switchTab(tab, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+tab).classList.add('active');
+  btn.classList.add('active');
 }
 
-// ════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // STORY GENERATOR
-// ════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 const storyData = {
-  character: ['a brave little dragon','a friendly wizard','a talking cat','a tiny fairy','a cheeky monkey','a sleepy bear','a magical unicorn','a curious rabbit','a lost alien','a playful dinosaur','a singing mermaid','a baby elephant','a clever fox','a giggling penguin','a shy cloud'],
-  locationStart: ['a cosy treehouse','a magical forest','a sunny beach','the top of a mountain','a secret garden','a fluffy cloud','under the sea','a busy market','a snowy village','a colourful jungle','a mysterious cave','a giant library','a rainbow farm','a twinkling spaceship','a peaceful meadow'],
-  locationFinish: ['a hidden castle','the moon','a land made of sweets','a cosy home','a giant rainbow','a treasure island','a faraway village','a magical lake','a cloud kingdom','the centre of the earth','a glittering ice palace','a sunflower valley','a sleepy seaside town','a friendly dragon\'s den','a land where toys come alive'],
-  theme: ['friendship','bravery','kindness','helping others','believing in yourself','the power of sharing','never giving up','saying sorry','telling the truth','being curious','looking after nature','finding your way home','making new friends','being different is special','teamwork'],
-  object: ['a golden key','a magic map','a glowing stone','a tiny hat','a singing flower','a broken toy','a mysterious letter','a pair of wings','a sparkly wand','a giant acorn','a very old book','a secret potion','a magical whistle','an enchanted mirror','a colourful kite'],
-  hurdle: ['gets lost in the dark','makes a big mistake','loses something important','feels too scared to try','nobody believes them','the path disappears','a storm arrives suddenly','a grumpy giant blocks the way','runs out of energy','their magic stops working','has to do it all alone','the bridge is broken','a riddle must be solved first','time is running out','they forget what they set out to do']
+  character:     ['a brave little dragon','a friendly wizard','a talking cat','a tiny fairy','a cheeky monkey','a sleepy bear','a magical unicorn','a curious rabbit','a lost alien','a playful dinosaur','a singing mermaid','a baby elephant','a clever fox','a giggling penguin','a shy little cloud'],
+  locationStart: ['a cosy treehouse','a magical forest','a sunny beach','the top of a mountain','a secret garden','a fluffy cloud','under the sea','a busy village market','a snowy cottage','a colourful jungle','a mysterious cave','a giant library','a rainbow farm','a twinkling spaceship','a peaceful meadow'],
+  locationFinish:['a hidden castle','the moon','a land made of sweets','a cosy home','a giant rainbow','a treasure island','a faraway village','a magical lake','a cloud kingdom','the middle of the earth','a glittering ice palace','a sunflower valley','a sleepy seaside town','a friendly dragon\'s den','a land where toys come alive'],
+  theme:         ['friendship','bravery','kindness','helping others','believing in yourself','the power of sharing','never giving up','saying sorry','telling the truth','being curious','looking after nature','finding your way home','making new friends','being different is special','working together'],
+  object:        ['a golden key','a magic map','a glowing stone','a tiny hat','a singing flower','a broken toy','a mysterious letter','a pair of wings','a sparkly wand','a giant acorn','a very old book','a secret potion','a magical whistle','an enchanted mirror','a colourful kite'],
+  hurdle:        ['gets lost in the dark','makes a big mistake','loses something important','feels too scared to try','nobody believes them','the path disappears','a storm arrives suddenly','a grumpy giant blocks the way','runs out of energy','their magic stops working','has to do it all alone','the bridge is broken','a riddle must be solved first','time is running out','forgets what they set out to do']
 };
 
-const storyLabels = {
-  character: { emoji: '🧙', label: 'Character' },
-  locationStart: { emoji: '🏠', label: 'Starts at' },
-  locationFinish: { emoji: '🏰', label: 'Ends at' },
-  theme: { emoji: '💜', label: 'Theme' },
-  object: { emoji: '✨', label: 'Magic Object' },
-  hurdle: { emoji: '⚡', label: 'The Hurdle' }
-};
+const storyMeta = [
+  { key:'character',     emoji:'🧙', label:'Who is it about?' },
+  { key:'locationStart', emoji:'🏠', label:'Where do they start?' },
+  { key:'locationFinish',emoji:'🏰', label:'Where do they end up?' },
+  { key:'theme',         emoji:'💜', label:'What does the story teach?' },
+  { key:'object',        emoji:'✨', label:'What magic thing do they find?' },
+  { key:'hurdle',        emoji:'⚡', label:'What goes wrong?' },
+];
 
-let locked = { character: false, locationStart: false, locationFinish: false, theme: false, object: false, hurdle: false };
-let currentKeywords = {};
+let locked = {}, currentKeywords = {};
+storyMeta.forEach(({key}) => { locked[key]=false; currentKeywords[key]=pick(storyData[key]); });
 
-function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function pick(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
 
-function initKeywordGrid() {
-  Object.keys(storyData).forEach(key => { currentKeywords[key] = pick(storyData[key]); });
-  renderKeywordGrid();
-}
-
-function renderKeywordGrid() {
-  const grid = document.getElementById('keywordGrid');
-  grid.innerHTML = Object.keys(storyData).map(key => {
-    const { emoji, label } = storyLabels[key];
-    const isLocked = locked[key];
-    return `
-      <div class="keyword-item" onclick="refreshKeyword('${key}')">
-        <div class="keyword-refresh">${isLocked ? '🔒' : '🔄'}</div>
+function renderKeywordList() {
+  document.getElementById('keywordList').innerHTML = storyMeta.map(({key,emoji,label},i) => `
+    <div class="keyword-item${locked[key]?' locked':''}" onclick="refreshKeyword('${key}')">
+      <div class="keyword-step">${i+1}</div>
+      <div class="keyword-left">
         <div class="keyword-label">${emoji} ${label}</div>
         <div class="keyword-value" id="kw-${key}">${currentKeywords[key]}</div>
-        <button class="lock-btn ${isLocked ? 'locked' : ''}" id="lock-${key}" onclick="toggleLock(event,'${key}')">
-          ${isLocked ? '🔒 Locked' : '🔓 Lock this'}
+      </div>
+      <div class="keyword-right">
+        <span class="keyword-refresh-icon">${locked[key]?'🔒':'🔄'}</span>
+        <button class="lock-btn${locked[key]?' locked':''}" onclick="toggleLock(event,'${key}')">
+          ${locked[key]?'🔒 Keeping this':'🔓 Keep this'}
         </button>
-      </div>`;
-  }).join('');
+      </div>
+    </div>`).join('');
 }
 
 function refreshKeyword(key) {
   if (locked[key]) return;
   currentKeywords[key] = pick(storyData[key]);
-  document.getElementById('kw-' + key).textContent = currentKeywords[key];
+  renderKeywordList();
 }
 
 function toggleLock(e, key) {
   e.stopPropagation();
   locked[key] = !locked[key];
-  renderKeywordGrid();
+  renderKeywordList();
 }
 
 function generateStory() {
-  // Regenerate unlocked keywords
-  Object.keys(storyData).forEach(key => {
-    if (!locked[key]) currentKeywords[key] = pick(storyData[key]);
-  });
-  renderKeywordGrid();
+  storyMeta.forEach(({key}) => { if (!locked[key]) currentKeywords[key]=pick(storyData[key]); });
+  renderKeywordList();
 
-  const grid = document.getElementById('storyPromptGrid');
-  grid.innerHTML = Object.keys(storyData).map(key => {
-    const { emoji, label } = storyLabels[key];
-    return `
-      <div class="story-prompt-item">
+  document.getElementById('storyPromptList').innerHTML = storyMeta.map(({key,emoji,label},i) => `
+    <div class="story-prompt-item">
+      <div class="story-prompt-step">${i+1}</div>
+      <div>
         <div class="story-prompt-label">${emoji} ${label}</div>
         <div class="story-prompt-value">${currentKeywords[key]}</div>
-      </div>`;
-  }).join('');
+      </div>
+    </div>`).join('');
 
   const tips = [
-    `Start with "${currentKeywords.character} was having a perfectly ordinary day at ${currentKeywords.locationStart}... until something changed."`,
-    `Try opening with "One morning, ${currentKeywords.character} discovered ${currentKeywords.object} and everything changed."`,
+    `Start with: "${currentKeywords.character} was having a perfectly ordinary day at ${currentKeywords.locationStart}... until something changed."`,
+    `Try: "One morning, ${currentKeywords.character} discovered ${currentKeywords.object} and everything changed."`,
     `Set the scene: "Deep in ${currentKeywords.locationStart}, ${currentKeywords.character} had a big dream — to reach ${currentKeywords.locationFinish}."`,
-    `Hook them in: "Nobody had ever made it to ${currentKeywords.locationFinish}. But ${currentKeywords.character} was going to try."`,
-    `Start with the hurdle: "The problem began when ${currentKeywords.character} ${currentKeywords.hurdle}..."`
+    `Hook them: "Nobody had ever made it to ${currentKeywords.locationFinish}. But ${currentKeywords.character} was going to try."`,
+    `Start with trouble: "Everything was going well until ${currentKeywords.character} ${currentKeywords.hurdle}..."`
   ];
 
-  document.getElementById('storyTip').innerHTML = `💡 <strong>Story starter idea:</strong> ${pick(tips)}`;
-
-  const result = document.getElementById('storyResult');
-  result.classList.remove('visible');
-  void result.offsetWidth;
-  result.classList.add('visible');
-  setTimeout(() => result.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+  document.getElementById('storyTip').innerHTML=`💡 <strong>How to begin:</strong> ${pick(tips)}`;
+  const result=document.getElementById('storyResult');
+  result.classList.remove('visible'); void result.offsetWidth; result.classList.add('visible');
+  setTimeout(()=>result.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
 }
 
-// ════════════════════════════════════════════════
-// PWA — Register service worker
-// ════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// PWA
+// ═══════════════════════════════════════════════
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
-  });
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
 }
 
-// ════════════════════════════════════════════════
 // INIT
-// ════════════════════════════════════════════════
 loadGames();
-initKeywordGrid();
+renderKeywordList();
 </script>
 </body>
 </html>
